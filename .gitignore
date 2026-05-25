@@ -2,6 +2,5 @@ pycache/
 __pycache__/
 .venv/
 .env
-README.md
 LICENSE
 docs/
