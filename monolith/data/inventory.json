@@ -1,0 +1,22 @@
+{
+  "prod-001": {
+    "product_id": "prod-001",
+    "quantity": 50,
+    "reserved": 0
+  },
+  "prod-002": {
+    "product_id": "prod-002",
+    "quantity": 25,
+    "reserved": 0
+  },
+  "prod-003": {
+    "product_id": "prod-003",
+    "quantity": 100,
+    "reserved": 0
+  },
+  "6a7d8ab5-7efb-44b3-8658-82b75664f6fa": {
+    "product_id": "6a7d8ab5-7efb-44b3-8658-82b75664f6fa",
+    "quantity": 0,
+    "reserved": 0
+  }
+}

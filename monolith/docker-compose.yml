@@ -1,0 +1,18 @@
+services:
+  store-monolith:
+    build: .
+    container_name: edugem-store-monolith
+    ports:
+      - "8000:8000"
+    environment:
+      STORE_DEBUG: "true"
+      STORE_DATA_DIR: /app/data
+    volumes:
+      # Persistencia y observación de eventos en el host
+      - ./data:/app/data
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 5s

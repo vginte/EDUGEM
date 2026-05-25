@@ -1,0 +1,34 @@
+[
+  {
+    "id": "prod-001",
+    "name": "Auriculares Bluetooth",
+    "description": "Cancelación de ruido, 30h batería",
+    "price": 79.99,
+    "category": "electronics",
+    "active": true
+  },
+  {
+    "id": "prod-002",
+    "name": "Teclado Mecánico",
+    "description": "Switches red, layout ES",
+    "price": 129.5,
+    "category": "electronics",
+    "active": true
+  },
+  {
+    "id": "prod-003",
+    "name": "Libro: Arquitectura Cloud Native",
+    "description": "Guía práctica para sistemas distribuidos",
+    "price": 45.0,
+    "category": "books",
+    "active": true
+  },
+  {
+    "id": "6a7d8ab5-7efb-44b3-8658-82b75664f6fa",
+    "name": "string",
+    "description": "",
+    "price": 1.0,
+    "category": "general",
+    "active": true
+  }
+]
