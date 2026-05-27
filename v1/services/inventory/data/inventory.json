@@ -1,0 +1,12 @@
+{
+  "prod-001": {
+    "product_id": "prod-001",
+    "quantity": 50,
+    "reserved": 0
+  },
+  "prod-002": {
+    "product_id": "prod-002",
+    "quantity": 25,
+    "reserved": 0
+  }
+}
