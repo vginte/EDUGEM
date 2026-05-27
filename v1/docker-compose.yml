@@ -1,0 +1,47 @@
+services:
+  catalog-service:
+    build: ./services/catalog
+    container_name: edugem-v1-catalog
+    environment:
+      DATA_FILE: /app/data/products.json
+    volumes:
+      - ./services/catalog/data:/app/data
+    ports:
+      - "8001:8001"
+
+  inventory-service:
+    build: ./services/inventory
+    container_name: edugem-v1-inventory
+    environment:
+      DATA_FILE: /app/data/inventory.json
+    volumes:
+      - ./services/inventory/data:/app/data
+    ports:
+      - "8002:8002"
+
+  customers-service:
+    build: ./services/customers
+    container_name: edugem-v1-customers
+    environment:
+      DATA_FILE: /app/data/customers.json
+    volumes:
+      - ./services/customers/data:/app/data
+    ports:
+      - "8003:8003"
+
+  orders-service:
+    build: ./services/orders
+    container_name: edugem-v1-orders
+    environment:
+      DATA_FILE: /app/data/orders.json
+      CATALOG_BASE_URL: http://catalog-service:8001
+      INVENTORY_BASE_URL: http://inventory-service:8002
+      CUSTOMERS_BASE_URL: http://customers-service:8003
+    volumes:
+      - ./services/orders/data:/app/data
+    ports:
+      - "8004:8004"
+    depends_on:
+      - catalog-service
+      - inventory-service
+      - customers-service
