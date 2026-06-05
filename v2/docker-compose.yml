@@ -1,0 +1,110 @@
+services:
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.6.1
+    container_name: edugem-v2-zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - "2181:2181"
+
+  kafka:
+    image: confluentinc/cp-kafka:7.6.1
+    container_name: edugem-v2-kafka
+    depends_on:
+      - zookeeper
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+
+  kafdrop:
+    image: obsidiandynamics/kafdrop:latest
+    container_name: edugem-v2-kafdrop
+    depends_on:
+      - kafka
+    ports:
+      - "9001:9000"
+    environment:
+      KAFKA_BROKERCONNECT: kafka:29092
+      JVM_OPTS: "-Xms32M -Xmx64M"
+
+  catalog-service:
+    build: ./services/catalog
+    container_name: edugem-v2-catalog
+    environment:
+      DATA_FILE: /app/data/products.json
+    volumes:
+      - ./services/catalog/data:/app/data
+    ports:
+      - "8001:8001"
+
+  inventory-service:
+    build: ./services/inventory
+    container_name: edugem-v2-inventory
+    environment:
+      DATA_FILE: /app/data/inventory.json
+    volumes:
+      - ./services/inventory/data:/app/data
+    ports:
+      - "8002:8002"
+
+  customers-service:
+    build: ./services/customers
+    container_name: edugem-v2-customers
+    environment:
+      DATA_FILE: /app/data/customers.json
+    volumes:
+      - ./services/customers/data:/app/data
+    ports:
+      - "8003:8003"
+
+  orders-service:
+    build: ./services/orders
+    container_name: edugem-v2-orders
+    environment:
+      DATA_FILE: /app/data/orders.json
+      KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+      KAFKA_TOPIC: store-events
+      CATALOG_BASE_URL: http://catalog-service:8001
+      CUSTOMERS_BASE_URL: http://customers-service:8003
+    volumes:
+      - ./services/orders/data:/app/data
+    ports:
+      - "8004:8004"
+    depends_on:
+      - kafka
+      - catalog-service
+      - customers-service
+
+  inventory-worker:
+    build: ./workers/inventory-worker
+    container_name: edugem-v2-inventory-worker
+    environment:
+      KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+      KAFKA_TOPIC: store-events
+      KAFKA_GROUP_ID: inventory-worker-group
+      INVENTORY_BASE_URL: http://inventory-service:8002
+      ORDERS_BASE_URL: http://orders-service:8004
+    depends_on:
+      - kafka
+      - inventory-service
+      - orders-service
+    restart: unless-stopped
+
+  notification-worker:
+    build: ./workers/notification-worker
+    container_name: edugem-v2-notification-worker
+    environment:
+      KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+      KAFKA_TOPIC: store-events
+      KAFKA_GROUP_ID: notification-worker-group
+    depends_on:
+      - kafka
+      - orders-service
+    restart: unless-stopped
