@@ -1,0 +1,18 @@
+[
+  {
+    "id": "prod-001",
+    "name": "Auriculares Bluetooth",
+    "description": "Cancelacion de ruido, 30h bateria",
+    "price": 79.99,
+    "category": "electronics",
+    "active": true
+  },
+  {
+    "id": "prod-002",
+    "name": "Teclado Mecanico",
+    "description": "Switches red, layout ES",
+    "price": 129.5,
+    "category": "electronics",
+    "active": true
+  }
+]
